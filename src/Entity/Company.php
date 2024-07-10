@@ -5,20 +5,12 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\CompanyRepository;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\ApiResource;
+use App\Constants\SerializationGroups;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
-#[ApiResource(
-    operations: [
-        new Get(),
-        new GetCollection()
-    ],
-    paginationEnabled: false,
-)]
 class Company
 {
     use TimestampableEntity;
@@ -29,15 +21,19 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
     private ?string $url = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
     private ?string $logo = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
     private ?string $logoClass = null;
 
     public function getId(): ?int
