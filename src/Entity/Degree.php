@@ -7,18 +7,20 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use App\Constants\SerializationGroups;
 use App\Repository\DegreeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: DegreeRepository::class)]
 #[ApiResource(
+    normalizationContext: ['groups' => [SerializationGroups::DEGREE_READ_COLLECTION]],
     operations: [
-        new Get(),
         new GetCollection()
     ],
     paginationEnabled: false,
@@ -35,18 +37,23 @@ class Degree
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
     private ?Uuid $uuid = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
     private ?\DateTimeInterface $graduatedDate = null;
 
     #[ORM\ManyToOne]
+    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
     private ?Company $company = null;
 
     public function getId(): ?int
