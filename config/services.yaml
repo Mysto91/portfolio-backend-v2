@@ -26,3 +26,8 @@ services:
     App\Identifier\UuidUriVariableTransformer:
         tags:
             - { name: api_platform.uri_variables.transformer }
+
+    App\State\GetProjectProvider:
+        arguments:
+            $provider: '@api_platform.doctrine.orm.state.item_provider'
+        tags: [ 'api_platform.state_provider' ]

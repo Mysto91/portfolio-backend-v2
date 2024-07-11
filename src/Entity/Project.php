@@ -9,20 +9,31 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
 use App\Constants\SerializationGroups;
+use App\Dto\ProjectDto;
 use App\Repository\ProjectRepository;
+use App\State\GetProjectProvider;
+use App\State\Project\GetProjectsProvider;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
-use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 #[ApiResource(
+    output: ProjectDto::class,
     operations: [
-        new GetCollection(normalizationContext: ['groups' => [SerializationGroups::PROJECT_READ_COLLECTION]]),
-        new Get(normalizationContext: ['groups' => [SerializationGroups::PROJECT_READ_ITEM]]),
+        new GetCollection(
+            normalizationContext: ['groups' => [SerializationGroups::PROJECT_READ_COLLECTION]],
+            provider: GetProjectsProvider::class,
+        ),
+        new Get(
+            normalizationContext: ['groups' => [SerializationGroups::PROJECT_READ_ITEM]],
+            provider: GetProjectProvider::class,
+        ),
     ],
     paginationEnabled: true,
 )]
@@ -37,57 +48,46 @@ class Project
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups([
-        SerializationGroups::PROJECT_READ_COLLECTION,
-        SerializationGroups::PROJECT_READ_ITEM
-    ])]
     #[ApiProperty(identifier: true)]
     private ?Uuid $uuid = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups([
-        SerializationGroups::PROJECT_READ_COLLECTION,
-        SerializationGroups::PROJECT_READ_ITEM
-    ])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $description = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups([
-        SerializationGroups::PROJECT_READ_COLLECTION,
-        SerializationGroups::PROJECT_READ_ITEM
-    ])]
     private ?string $appUrl = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $githubUrl = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups([
-        SerializationGroups::PROJECT_READ_COLLECTION,
-        SerializationGroups::PROJECT_READ_ITEM
-    ])]
     private ?string $overview = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $credits = null;
 
     #[ORM\Column(length: 200, nullable: true)]
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $mainImageUrl = null;
 
     #[ORM\Column(length: 200, nullable: true)]
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $firstImageUrl = null;
 
     #[ORM\Column(length: 200, nullable: true)]
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $secondImageUrl = null;
+
+    /**
+     * @var Collection<int, Technology>
+     */
+    #[ORM\ManyToMany(targetEntity: Technology::class, inversedBy: 'projects')]
+    private Collection $technologies;
+
+    public function __construct()
+    {
+        $this->technologies = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -210,6 +210,30 @@ class Project
     public function setSecondImageUrl(?string $secondImageUrl): static
     {
         $this->secondImageUrl = $secondImageUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Technology>
+     */
+    public function getTechnologies(): Collection
+    {
+        return $this->technologies;
+    }
+
+    public function addTechnology(Technology $technology): static
+    {
+        if (!$this->technologies->contains($technology)) {
+            $this->technologies->add($technology);
+        }
+
+        return $this;
+    }
+
+    public function removeTechnology(Technology $technology): static
+    {
+        $this->technologies->removeElement($technology);
 
         return $this;
     }
