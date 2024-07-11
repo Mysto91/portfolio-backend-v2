@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
 use App\Constants\SerializationGroups;
 use App\Repository\ProjectRepository;
 use Doctrine\DBAL\Types\Types;
@@ -18,9 +19,9 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => [SerializationGroups::PROJECT_READ_COLLECTION]],
     operations: [
-        new GetCollection()
+        new GetCollection(normalizationContext: ['groups' => [SerializationGroups::PROJECT_READ_COLLECTION]]),
+        new Get(normalizationContext: ['groups' => [SerializationGroups::PROJECT_READ_ITEM]]),
     ],
     paginationEnabled: true,
 )]
@@ -34,37 +35,55 @@ class Project
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(SerializationGroups::PROJECT_READ_COLLECTION)]
+    #[Groups([
+        SerializationGroups::PROJECT_READ_COLLECTION,
+        SerializationGroups::PROJECT_READ_ITEM
+    ])]
     private ?Uuid $uuid = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups(SerializationGroups::PROJECT_READ_COLLECTION)]
+    #[Groups([
+        SerializationGroups::PROJECT_READ_COLLECTION,
+        SerializationGroups::PROJECT_READ_ITEM
+    ])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $description = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(SerializationGroups::PROJECT_READ_COLLECTION)]
+    #[Groups([
+        SerializationGroups::PROJECT_READ_COLLECTION,
+        SerializationGroups::PROJECT_READ_ITEM
+    ])]
     private ?string $appUrl = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $githubUrl = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups(SerializationGroups::PROJECT_READ_COLLECTION)]
+    #[Groups([
+        SerializationGroups::PROJECT_READ_COLLECTION,
+        SerializationGroups::PROJECT_READ_ITEM
+    ])]
     private ?string $overview = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $credits = null;
 
     #[ORM\Column(length: 200, nullable: true)]
+    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $mainImageUrl = null;
 
     #[ORM\Column(length: 200, nullable: true)]
+    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $firstImageUrl = null;
 
     #[ORM\Column(length: 200, nullable: true)]
+    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
     private ?string $secondImageUrl = null;
 
     public function getId(): ?int
