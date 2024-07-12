@@ -4,64 +4,44 @@ namespace App\Dto;
 
 use App\Constants\SerializationGroups;
 use App\Entity\Project;
-use App\Entity\Technology;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Uid\Uuid;
 
+#[Groups(SerializationGroups::PROJECT_READ_ITEM)]
 final class ProjectDto
 {
-    public $id;
+    #[Groups(SerializationGroups::PROJECT_READ_COLLECTION)]
+    public readonly Uuid $uuid;
 
-    #[Groups([
-        SerializationGroups::PROJECT_READ_COLLECTION,
-        SerializationGroups::PROJECT_READ_ITEM
-    ])]
-    public $uuid;
+    #[Groups(SerializationGroups::PROJECT_READ_COLLECTION)]
+    public readonly string $title;
 
-    #[Groups([
-        SerializationGroups::PROJECT_READ_COLLECTION,
-        SerializationGroups::PROJECT_READ_ITEM
-    ])]
-    public $title;
+    public readonly string $description;
 
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
-    public $description;
+    #[Groups(SerializationGroups::PROJECT_READ_COLLECTION)]
+    public readonly string $appUrl;
 
-    #[Groups([
-        SerializationGroups::PROJECT_READ_COLLECTION,
-        SerializationGroups::PROJECT_READ_ITEM
-    ])]
-    public $appUrl;
+    public readonly string $githubUrl;
 
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
-    public $githubUrl;
+    #[Groups(SerializationGroups::PROJECT_READ_COLLECTION)]
+    public readonly string $overview;
 
-    #[Groups([
-        SerializationGroups::PROJECT_READ_COLLECTION,
-        SerializationGroups::PROJECT_READ_ITEM
-    ])]
-    public $overview;
+    public readonly ?string $credits;
 
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
-    public $credits;
+    public readonly ?string $mainImageUrl;
 
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
-    public $mainImageUrl;
+    public readonly ?string $firstImageUrl;
 
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
-    public $firstImageUrl;
+    public readonly ?string $secondImageUrl;
 
-    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
-    public $secondImageUrl;
-
-    #[Groups([
-        SerializationGroups::PROJECT_READ_COLLECTION,
-        SerializationGroups::PROJECT_READ_ITEM
-    ])]
-    public $technologies;
+    #[Groups(SerializationGroups::PROJECT_READ_COLLECTION)]
+    /**
+     * @var TechnologyDto[]
+     */
+    public readonly array $technologies;
 
     public function __construct(Project $project)
     {
-        $this->id = $project->getId();
         $this->uuid = $project->getUuid();
         $this->title = $project->getTitle();
         $this->description = $project->getDescription();
@@ -72,17 +52,6 @@ final class ProjectDto
         $this->mainImageUrl = $project->getMainImageUrl();
         $this->firstImageUrl = $project->getFirstImageUrl();
         $this->secondImageUrl = $project->getSecondImageUrl();
-        $this->technologies = $project->getTechnologies()->map(fn($technology) => $this->normalizeTechnology($technology));
-    }
-
-    //TODO : Voir si c'est possible de faire mieux
-    private function normalizeTechnology(Technology $technology): array
-    {
-        return [
-            'id' => $technology->getId(),
-            'name' => $technology->getName(),
-            'type' => $technology->getTechnologyType()->getName(),
-            'url' => $technology->getUrl(),
-        ];
+        $this->technologies = $project->getTechnologies()->map(fn($technology) => new TechnologyDto($technology));
     }
 }

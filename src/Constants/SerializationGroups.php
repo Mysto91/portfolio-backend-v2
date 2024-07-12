@@ -12,4 +12,6 @@ final class SerializationGroups
     public const PROJECT_READ_ITEM = 'read:project:item';
 
     public const TECHNOLOGY_READ_COLLECTION = 'read:technology:collection';
+
+    public const EXPERIENCE_READ_COLLECTION = 'read:experience:collection';
 }
