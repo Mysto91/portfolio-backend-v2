@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Entity\TechnologyType;
+use App\Entity\ExperienceTechnology;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-class TechnologyTypeRepository extends ServiceEntityRepository
+class ExperienceTechnologyRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, TechnologyType::class);
+        parent::__construct($registry, ExperienceTechnology::class);
     }
 }

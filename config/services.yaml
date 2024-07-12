@@ -31,3 +31,8 @@ services:
         arguments:
             $provider: '@api_platform.doctrine.orm.state.item_provider'
         tags: [ 'api_platform.state_provider' ]
+
+    App\State\GetExperiencesProvider:
+        arguments:
+            $provider: '@api_platform.doctrine.orm.state.collection_provider'
+        tags: [ 'api_platform.state_provider' ]

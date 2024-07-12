@@ -50,6 +50,9 @@ class Technology
     #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'technologies')]
     private Collection $projects;
 
+    #[ORM\OneToMany(targetEntity: ExperienceTechnology::class, mappedBy: 'technology')]
+    private Collection $experienceTechnologies;
+
     public function __construct()
     {
         $this->projects = new ArrayCollection();

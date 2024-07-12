@@ -21,19 +21,31 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
+    #[Groups([
+        SerializationGroups::DEGREE_READ_COLLECTION,
+        SerializationGroups::EXPERIENCE_READ_COLLECTION
+    ])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
+    #[Groups([
+        SerializationGroups::DEGREE_READ_COLLECTION,
+        SerializationGroups::EXPERIENCE_READ_COLLECTION
+    ])]
     private ?string $url = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
+    #[Groups([
+        SerializationGroups::DEGREE_READ_COLLECTION,
+        SerializationGroups::EXPERIENCE_READ_COLLECTION
+    ])]
     private ?string $logo = null;
 
     #[ORM\Column(length: 100, nullable: true)]
-    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
+    #[Groups([
+        SerializationGroups::DEGREE_READ_COLLECTION,
+        SerializationGroups::EXPERIENCE_READ_COLLECTION
+    ])]
     private ?string $logoClass = null;
 
     public function getId(): ?int
