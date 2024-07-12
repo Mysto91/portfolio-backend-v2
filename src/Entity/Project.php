@@ -43,19 +43,19 @@ class Project
 
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     #[ApiProperty(identifier: false)]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ApiProperty(identifier: true)]
-    private ?Uuid $uuid = null;
+    private Uuid $uuid;
 
     #[ORM\Column(length: 100)]
-    private ?string $title = null;
+    private string $title;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
+    private string $description;
 
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $appUrl = null;
@@ -64,7 +64,7 @@ class Project
     private ?string $githubUrl = null;
 
     #[ORM\Column(length: 100)]
-    private ?string $overview = null;
+    private string $overview;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $credits = null;

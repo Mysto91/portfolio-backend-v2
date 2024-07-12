@@ -37,9 +37,6 @@ class Technology
     #[ORM\Column(length: 50, nullable: true, unique: true)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $url = null;
-
     #[ORM\ManyToOne(inversedBy: 'technologies')]
     #[ORM\JoinColumn(nullable: false)]
     private ?TechnologyType $technologyType = null;
@@ -71,18 +68,6 @@ class Technology
     public function setName(?string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getUrl(): ?string
-    {
-        return $this->url;
-    }
-
-    public function setUrl(?string $url): static
-    {
-        $this->url = $url;
 
         return $this;
     }
