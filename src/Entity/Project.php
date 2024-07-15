@@ -84,9 +84,16 @@ class Project
     #[ORM\ManyToMany(targetEntity: Technology::class, inversedBy: 'projects')]
     private Collection $technologies;
 
+    /**
+     * @var Collection<int, Functionality>
+     */
+    #[ORM\OneToMany(targetEntity: Functionality::class, mappedBy: 'project', orphanRemoval: true)]
+    private Collection $functionalities;
+
     public function __construct()
     {
         $this->technologies = new ArrayCollection();
+        $this->functionalities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -234,6 +241,31 @@ class Project
     public function removeTechnology(Technology $technology): static
     {
         $this->technologies->removeElement($technology);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Functionality>
+     */
+    public function getFunctionalities(): Collection
+    {
+        return $this->functionalities;
+    }
+
+    public function addFunctionality(Functionality $functionality): static
+    {
+        if (!$this->functionalities->contains($functionality)) {
+            $this->functionalities->add($functionality);
+            $functionality->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFunctionality(Functionality $functionality): static
+    {
+        $this->functionalities->removeElement($functionality);
 
         return $this;
     }
