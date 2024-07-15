@@ -7,22 +7,27 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use App\Constants\SerializationGroups;
+use App\Dto\DegreeDto;
 use App\Repository\DegreeRepository;
+use App\State\Degree\GetDegreesProvider;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
-use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: DegreeRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => [SerializationGroups::DEGREE_READ_COLLECTION]],
+    output: DegreeDto::class,
     operations: [
-        new GetCollection()
+        new GetCollection(
+            normalizationContext: ['groups' => [SerializationGroups::DEGREE_READ_COLLECTION]],
+            provider: GetDegreesProvider::class
+        )
     ],
-    paginationEnabled: false,
 )]
 class Degree
 {
@@ -31,31 +36,37 @@ class Degree
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
-    private ?Uuid $uuid = null;
+    private Uuid $uuid;
 
     #[ORM\Column(length: 50)]
-    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
-    private ?string $title = null;
+    private string $title;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
     private ?\DateTimeInterface $graduatedDate = null;
 
     #[ORM\ManyToOne]
-    #[Groups(SerializationGroups::DEGREE_READ_COLLECTION)]
-    private ?Company $company = null;
+    private Company $company;
 
-    public function getId(): ?int
+    /**
+     * @var Collection<int, Subject>
+     */
+    #[ORM\ManyToMany(targetEntity: Subject::class, mappedBy: 'degrees')]
+    private Collection $subjects;
+
+    public function __construct()
+    {
+        $this->subjects = new ArrayCollection();
+    }
+
+    public function getId(): int
     {
         return $this->id;
     }
@@ -65,7 +76,7 @@ class Degree
         return $this->uuid;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -101,14 +112,41 @@ class Degree
         return $this;
     }
 
-    public function getCompany(): ?Company
+    public function getCompany(): Company
     {
         return $this->company;
     }
 
-    public function setCompany(?Company $company): static
+    public function setCompany(Company $company): static
     {
         $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Subject>
+     */
+    public function getSubjects(): Collection
+    {
+        return $this->subjects;
+    }
+
+    public function addSubject(Subject $subject): static
+    {
+        if (!$this->subjects->contains($subject)) {
+            $this->subjects->add($subject);
+            $subject->addDegree($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubject(Subject $subject): static
+    {
+        if ($this->subjects->removeElement($subject)) {
+            $subject->removeDegree($this);
+        }
 
         return $this;
     }

@@ -3,7 +3,6 @@
 namespace App\Dto;
 
 use App\Constants\SerializationGroups;
-use App\Entity\Company;
 use App\Entity\Experience;
 use App\Enums\ContractType;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -24,7 +23,7 @@ final class ExperienceDto
 
     public readonly ?\DateTimeInterface $endDate;
 
-    public readonly Company $company;
+    public readonly CompanyDto $company;
 
     public readonly ContractType $contractType;
 
@@ -42,7 +41,7 @@ final class ExperienceDto
         $this->startDate = $experience->getStartDate();
         $this->endDate = $experience->getEndDate();
         $this->contractType = $experience->getContractType();
-        $this->company = $experience->getCompany();
+        $this->company = new CompanyDto($experience->getCompany());
         $this->technologies = $this->getTechnologiesDto($technologies);
     }
 
