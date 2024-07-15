@@ -4,6 +4,7 @@ namespace App\Dto;
 
 use App\Constants\SerializationGroups;
 use App\Entity\Project;
+use App\Dto\FunctionalityDto;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
@@ -40,6 +41,12 @@ final class ProjectDto
      */
     public readonly array $technologies;
 
+    #[Groups(SerializationGroups::PROJECT_READ_ITEM)]
+    /**
+     * @var FunctionalityDto[]
+     */
+    public readonly array $functionalities;
+
     public function __construct(Project $project)
     {
         $this->uuid = $project->getUuid();
@@ -53,5 +60,6 @@ final class ProjectDto
         $this->firstImageUrl = $project->getFirstImageUrl();
         $this->secondImageUrl = $project->getSecondImageUrl();
         $this->technologies = $project->getTechnologies()->map(fn($technology) => new TechnologyDto($technology))->toArray();
+        $this->functionalities = $project->getFunctionalities()->map(fn ($functionality) => new FunctionalityDto($functionality))->toArray();
     }
 }
