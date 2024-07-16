@@ -36,3 +36,11 @@ services:
         arguments:
             $provider: '@api_platform.doctrine.orm.state.collection_provider'
         tags: [ 'api_platform.state_provider' ]
+
+when@test:
+    services:
+        security.user_password_hasher:
+            class: Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher
+            public: true
+            arguments:
+                [ '@security.password_hasher_factory' ]
