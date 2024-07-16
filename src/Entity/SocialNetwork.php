@@ -45,6 +45,9 @@ class SocialNetwork
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
+    #[ORM\Column]
+    private bool $show;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -82,6 +85,18 @@ class SocialNetwork
     public function setUrl(?string $url): static
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    public function isShow(): ?bool
+    {
+        return $this->show;
+    }
+
+    public function setShow(bool $show): static
+    {
+        $this->show = $show;
 
         return $this;
     }

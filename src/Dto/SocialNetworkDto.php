@@ -16,11 +16,14 @@ final class SocialNetworkDto
 
     public readonly string $url;
 
+    public readonly bool $show;
+
     public function  __construct(SocialNetwork $socialNetwork)
     {
         $this->uuid = $socialNetwork->getUuid();
         $this->name = $socialNetwork->getName();
         $this->url = $socialNetwork->getUrl();
+        $this->show = $socialNetwork->isShow();
     }
 
 }

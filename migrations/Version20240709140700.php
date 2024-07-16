@@ -11,11 +11,19 @@ final class Version20240709140700 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->addSql('CREATE TABLE company (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(100) NOT NULL, url VARCHAR(255) DEFAULT NULL, logo VARCHAR(100) DEFAULT NULL, logo_class VARCHAR(100) DEFAULT NULL, created_at DATETIME NOT NULL, updated_at DATETIME DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE company (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                url VARCHAR(255) DEFAULT NULL,
+                logo VARCHAR(100) DEFAULT NULL,
+                logo_class VARCHAR(100) DEFAULT NULL,
+                created_at TIMESTAMP NOT NULL,
+                updated_at TIMESTAMP DEFAULT NULL
+        )');
     }
 
     public function down(Schema $schema): void
     {
-        $this->addSql('DROP TABLE company');
+        $this->addSql('DROP TABLE company CASCADE');
     }
 }
