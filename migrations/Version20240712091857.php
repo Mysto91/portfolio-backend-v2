@@ -11,13 +11,25 @@ final class Version20240712091857 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->addSql('CREATE TABLE experience (id INT AUTO_INCREMENT NOT NULL, company_id INT NOT NULL, position VARCHAR(50) NOT NULL, overview VARCHAR(400) NOT NULL, description LONGTEXT DEFAULT NULL, start_date DATETIME NOT NULL, end_date DATETIME DEFAULT NULL, uuid BINARY(16) NOT NULL COMMENT \'(DC2Type:uuid)\', contract_type VARCHAR(255) DEFAULT \'CDI\' NOT NULL, INDEX IDX_590C103979B1AD6 (company_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('ALTER TABLE experience ADD CONSTRAINT FK_590C103979B1AD6 FOREIGN KEY (company_id) REFERENCES company (id)');
+        $this->addSql('CREATE TABLE experience (
+            id SERIAL PRIMARY KEY,
+            company_id INT NOT NULL,
+            position VARCHAR(50) NOT NULL,
+            overview VARCHAR(400) NOT NULL,
+            description TEXT DEFAULT NULL,
+            start_date TIMESTAMP NOT NULL,
+            end_date TIMESTAMP DEFAULT NULL,
+            uuid UUID DEFAULT gen_random_uuid() NOT NULL,
+            contract_type VARCHAR(255) DEFAULT \'CDI\' NOT NULL,
+            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES company (id)
+        )');
+
+        $this->addSql('CREATE INDEX IDX_590C103979B1AD6 ON experience (company_id)');
     }
 
     public function down(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE experience DROP FOREIGN KEY FK_590C103979B1AD6');
+        $this->addSql('ALTER TABLE experience DROP CONSTRAINT fk_company_id');
         $this->addSql('DROP TABLE experience');
     }
 }

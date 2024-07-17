@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Dto\ProjectDto;
 use App\Entity\Project;
+use App\Exception\ProjectNotFoundException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class GetProjectProvider implements ProviderInterface
@@ -22,6 +23,10 @@ class GetProjectProvider implements ProviderInterface
     {
         /** @var Project */
         $project = $this->provider->provide($operation, $uriVariables, $context);
+
+        if ($project === null) {
+            throw new ProjectNotFoundException('The project does not exist');
+        }
 
         return new ProjectDto($project);
     }
