@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
@@ -36,6 +38,12 @@ use Symfony\Component\Uid\Uuid;
         ),
     ],
     paginationEnabled: true,
+)]
+#[ApiFilter(SearchFilter::class,
+    properties: [
+        'title' => 'ipartial',
+        'technologies.name' => 'ipartial',
+    ],
 )]
 class Project
 {
