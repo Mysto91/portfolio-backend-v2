@@ -13,7 +13,7 @@ use ApiPlatform\Metadata\Get;
 use App\Constants\SerializationGroups;
 use App\Dto\ProjectDto;
 use App\Repository\ProjectRepository;
-use App\State\GetProjectProvider;
+use App\State\Project\GetProjectProvider;
 use App\State\Project\GetProjectsProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

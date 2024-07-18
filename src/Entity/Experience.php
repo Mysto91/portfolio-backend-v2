@@ -10,7 +10,7 @@ use App\Constants\SerializationGroups;
 use App\Dto\ExperienceDto;
 use App\Enums\ContractType;
 use App\Repository\ExperienceRepository;
-use App\State\GetExperiencesProvider;
+use App\State\Experience\GetExperiencesProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;

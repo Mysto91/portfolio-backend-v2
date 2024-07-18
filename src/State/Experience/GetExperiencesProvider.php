@@ -2,17 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\State;
+namespace App\State\Experience;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Dto\ExperienceDto;
 use App\Entity\Experience;
 use App\Repository\TechnologyRepository;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class GetExperiencesProvider implements ProviderInterface
 {
     public function __construct(
+        #[Autowire(service: 'api_platform.doctrine.orm.state.collection_provider')]
         private ProviderInterface $provider,
         private TechnologyRepository $technologyRepository,
     ) {}
