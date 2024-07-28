@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    trusted_hosts: '%env(TRUSTED_HOSTS)%'
 
 services:
     # default configuration for services in *this* file
@@ -26,6 +27,11 @@ services:
     App\Identifier\UuidUriVariableTransformer:
         tags:
             - { name: api_platform.uri_variables.transformer }
+
+    App\Security\RequestMatcher\DomainRequestMatcher:
+        arguments:
+            $trustedHosts: '%trusted_hosts%'
+        tags: [ 'security.firewall.request_matcher' ]
 
 when@test:
     services:
