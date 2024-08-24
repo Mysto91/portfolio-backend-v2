@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use App\Constants\Order;
 use App\Constants\SerializationGroups;
 use App\Dto\ExperienceDto;
 use App\Enums\ContractType;
@@ -22,11 +23,12 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ExperienceRepository::class)]
 #[ApiResource(
-    output: ExperienceDto::class,
-    normalizationContext: ['groups' => [SerializationGroups::EXPERIENCE_READ_COLLECTION]],
     operations: [
         new GetCollection(provider: GetExperiencesProvider::class)
     ],
+    normalizationContext: ['groups' => [SerializationGroups::EXPERIENCE_READ_COLLECTION]],
+    output: ExperienceDto::class,
+    order: ['startDate' => Order::DESC],
 )]
 class Experience
 {
