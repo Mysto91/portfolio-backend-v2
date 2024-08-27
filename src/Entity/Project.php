@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
 use App\Constants\SerializationGroups;
 use App\Dto\ProjectDto;
+use App\Filter\MultiSearchFilter;
 use App\Repository\ProjectRepository;
 use App\State\Project\GetProjectProvider;
 use App\State\Project\GetProjectsProvider;
@@ -26,7 +27,6 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 #[ApiResource(
-    output: ProjectDto::class,
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => [SerializationGroups::PROJECT_READ_COLLECTION]],
@@ -37,14 +37,10 @@ use Symfony\Component\Uid\Uuid;
             provider: GetProjectProvider::class,
         ),
     ],
+    output: ProjectDto::class,
     paginationEnabled: true,
 )]
-#[ApiFilter(SearchFilter::class,
-    properties: [
-        'title' => 'ipartial',
-        'technologies.name' => 'ipartial',
-    ],
-)]
+#[ApiFilter(MultiSearchFilter::class, properties: ['title', 'technologies.name'])]
 class Project
 {
     use TimestampableEntity;
