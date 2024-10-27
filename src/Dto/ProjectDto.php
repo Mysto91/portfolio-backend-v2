@@ -29,11 +29,7 @@ final class ProjectDto
 
     public readonly ?string $credits;
 
-    public readonly ?string $mainImageUrl;
-
-    public readonly ?string $firstImageUrl;
-
-    public readonly ?string $secondImageUrl;
+    public readonly array $images;
 
     #[Groups(SerializationGroups::PROJECT_READ_COLLECTION)]
     /**
@@ -56,10 +52,21 @@ final class ProjectDto
         $this->githubUrl = $project->getGithubUrl();
         $this->overview = $project->getOverview();
         $this->credits = $project->getCredits();
-        $this->mainImageUrl = $project->getMainImageUrl();
-        $this->firstImageUrl = $project->getFirstImageUrl();
-        $this->secondImageUrl = $project->getSecondImageUrl();
+        $this->images = [
+            $this->normalizeImage('main_image_url', $project->getMainImageUrl()),
+            $this->normalizeImage('first_image_url', $project->getFirstImageUrl()),
+            $this->normalizeImage('second_image_url', $project->getSecondImageUrl()),
+        ];
         $this->technologies = $project->getTechnologies()->map(fn($technology) => new TechnologyDto($technology))->toArray();
         $this->functionalities = $project->getFunctionalities()->map(fn ($functionality) => new FunctionalityDto($functionality))->toArray();
     }
+
+    private function normalizeImage(string $type, ?string $url): array
+    {
+        return [
+            'type' => $type,
+            'url' => $url,
+        ];
+    }
+
 }
