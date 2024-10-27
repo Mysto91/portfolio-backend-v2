@@ -23,7 +23,7 @@ class GetProjectsProvider implements ProviderInterface
      */
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
     {
-        /** @var Project[] */
+        /** @var Project[] $projects */
         $projects = $this->provider->provide($operation, $uriVariables, $context);
 
         foreach ($projects as $project) {

@@ -21,7 +21,7 @@ class GetProjectProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): ProjectDto
     {
-        /** @var Project */
+        /** @var Project|null $project */
         $project = $this->provider->provide($operation, $uriVariables, $context);
 
         if ($project === null) {
